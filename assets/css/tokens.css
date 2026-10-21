@@ -1,0 +1,24 @@
+/* Measured design of the business's current website (rebuild.vn design tokens). */
+:root {
+  --color-primary: #136cd1;
+  --color-secondary: #044da0;
+  --color-accent: #ff0000;
+  --color-background: #ffffff;
+  --color-bg: #ffffff;
+  --color-surface: #f2f2f2;
+  --color-text: #0a0a0a;
+  --color-muted: #666666d9;
+  --color-border: #0000000d;
+  --color-link: #044a99;
+  --font-body: "Roboto", system-ui, sans-serif;
+  --font: "Roboto", system-ui, sans-serif;
+  --font-heading: "Roboto", system-ui, sans-serif;
+  --font-size-body: 10.88px;
+  --font-size-h3: 17px;
+  --radius-md: 5px;
+  --radius-lg: 10px;
+  --radius-pill: 9999px;
+  --radius: 5px;
+  --shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px inset;
+  --container: 1240px;
+}
