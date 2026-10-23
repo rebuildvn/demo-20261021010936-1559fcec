@@ -3,6 +3,8 @@
  * Needs only the PUBLIC website token of the client's inbox (SMEUP_SITE.livechat.websiteToken).
  * The visitor is tagged with site_id / client_id so conversations show which website they came from.
  * Without a token (local preview, not provisioned yet) a fallback button opens the contact form.
+ * The widget (~1.7 MB of CSS, JS and fonts) loads on the visitor's first scroll / tap / key, or at once when the chat
+ * bubble is tapped: until then a light bubble stands in, so the page itself stays fast (Google measures it untouched).
  *
  * Events: livechat_opened, livechat_started, livechat_message_sent (best effort, from widget events).
  */
@@ -122,17 +124,54 @@
 
   window.addEventListener('chatwoot:error', fallback);
 
-  var script = document.createElement('script');
-  script.src = baseUrl + '/packs/js/sdk.js';
-  script.async = true;
-  script.defer = true;
-  script.onload = function () {
-    if (window.chatwootSDK) {
-      window.chatwootSDK.run({ websiteToken: livechat.websiteToken, baseUrl: baseUrl });
-    } else {
-      fallback();
+  var loaded = false;
+  var openWhenReady = false;
+  var placeholder = null;
+
+  function load() {
+    if (loaded) {
+      return;
     }
-  };
-  script.onerror = fallback;
-  document.body.appendChild(script);
+    loaded = true;
+    var script = document.createElement('script');
+    script.src = baseUrl + '/packs/js/sdk.js';
+    script.async = true;
+    script.defer = true;
+    script.onload = function () {
+      if (window.chatwootSDK) {
+        window.chatwootSDK.run({ websiteToken: livechat.websiteToken, baseUrl: baseUrl });
+      } else {
+        fallback();
+      }
+    };
+    script.onerror = fallback;
+    document.body.appendChild(script);
+  }
+
+  window.addEventListener('chatwoot:ready', function () {
+    if (placeholder && placeholder.parentNode) {
+      placeholder.parentNode.removeChild(placeholder);
+    }
+    if (openWhenReady && window.$chatwoot) {
+      window.$chatwoot.toggle('open');
+    }
+  });
+
+  // The light stand-in bubble: tapping it loads the chat and opens it.
+  placeholder = document.createElement('button');
+  placeholder.type = 'button';
+  placeholder.className = 'chat-fallback';
+  placeholder.setAttribute('data-chat-launcher', '');
+  placeholder.setAttribute('aria-label', window.chatwootSettings.launcherTitle);
+  placeholder.textContent = '💬';
+  placeholder.addEventListener('click', function () {
+    trackOpened('widget');
+    openWhenReady = true;
+    load();
+  });
+  document.body.appendChild(placeholder);
+
+  ['scroll', 'pointerdown', 'touchstart', 'keydown'].forEach(function (type) {
+    window.addEventListener(type, load, { once: true, passive: true });
+  });
 })(window, document);

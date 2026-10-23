@@ -1,13 +1,13 @@
 /* Measured design of the business's current website (rebuild.vn design tokens). */
 :root {
   --color-primary: #136cd1;
-  --color-secondary: #044da0;
-  --color-accent: #ff0000;
+  --color-secondary: #ff0000;
+  --color-accent: #044a99;
   --color-background: #ffffff;
   --color-bg: #ffffff;
   --color-surface: #f2f2f2;
   --color-text: #0a0a0a;
-  --color-muted: #666666d9;
+  --color-muted: #5b5b5b;
   --color-border: #0000000d;
   --color-link: #044a99;
   --font-body: "Roboto", system-ui, sans-serif;
